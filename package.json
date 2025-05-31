@@ -1,0 +1,61 @@
+{
+  "name": "assemble-indexer",
+  "version": "1.0.0",
+  "description": "Protocol-agnostic blockchain indexer for Assemble Protocol events",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "start:dev": "tsx src/index.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "tsx prisma/seed.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "blockchain",
+    "indexer",
+    "ethereum",
+    "prisma",
+    "graphql",
+    "typescript",
+    "assemble-protocol"
+  ],
+  "author": "Imaginary Labs",
+  "license": "MIT",
+  "dependencies": {
+    "@graphql-tools/schema": "^10.0.0",
+    "@prisma/client": "^5.7.1",
+    "graphql": "^16.8.1",
+    "graphql-relay": "^0.10.0",
+    "graphql-yoga": "^5.0.0",
+    "prisma": "^5.7.1",
+    "viem": "^1.19.11",
+    "ws": "^8.14.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "@types/ws": "^8.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.4.0",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
