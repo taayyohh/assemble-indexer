@@ -90,11 +90,12 @@ export class BaseIndexer implements BaseIndexerInterface {
       // Initialize all blockchain clients
       await this.initializeBlockchainClients();
 
-      // Start processing loops for each chain
-      await this.startProcessingLoops();
-
+      // Set running state BEFORE starting processing loops
       this.isRunning = true;
       this.startTime = Date.now();
+
+      // Start processing loops for each chain
+      await this.startProcessingLoops();
 
       this.logger.info('✅ Indexer started successfully', {
         uptime: 0,
@@ -102,6 +103,7 @@ export class BaseIndexer implements BaseIndexerInterface {
       });
 
     } catch (error) {
+      this.isRunning = false; // Make sure to reset on error
       this.logger.error('Failed to start indexer', {
         error: (error as Error).message,
         stack: (error as Error).stack
@@ -163,20 +165,58 @@ export class BaseIndexer implements BaseIndexerInterface {
     const initPromises = Array.from(this.blockchainClients.entries()).map(
       async ([chainId, client]) => {
         try {
-          await client.initialize();
+          this.logger.debug(`Starting initialization for chain ${chainId}...`);
+          
+          // Add timeout to prevent hanging
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Initialization timeout')), 60000); // 60 second timeout
+          });
+          
+          await Promise.race([
+            client.initialize(),
+            timeoutPromise
+          ]);
+          
           this.logger.info(`✅ Initialized blockchain client for chain ${chainId}`);
         } catch (error) {
           this.logger.error(`❌ Failed to initialize blockchain client for chain ${chainId}`, {
             chainId,
             error: (error as Error).message
           });
-          throw error;
+          
+          // Mark this chain as unhealthy but don't fail the entire startup
+          this.stateManager.recordError(chainId, error as Error);
+          this.logger.warn(`Chain ${chainId} will be marked as unhealthy and retried later`);
         }
       }
     );
 
-    await Promise.all(initPromises);
-    this.logger.info('All blockchain clients initialized successfully');
+    // Wait for all initialization attempts (some may fail)
+    await Promise.allSettled(initPromises);
+    
+    // Check how many clients successfully initialized
+    const healthyClients = [];
+    for (const [chainId, client] of this.blockchainClients) {
+      try {
+        const isHealthy = await client.isHealthy();
+        if (isHealthy) {
+          healthyClients.push(chainId);
+        }
+      } catch (error) {
+        this.logger.debug(`Chain ${chainId} health check failed during startup`);
+      }
+    }
+    
+    this.logger.info(`Blockchain client initialization complete`, {
+      totalChains: this.blockchainClients.size,
+      healthyChains: healthyClients.length,
+      healthyChainIds: healthyClients
+    });
+    
+    // Continue even if some clients failed - they can be retried later
+    if (healthyClients.length === 0) {
+      this.logger.warn('No blockchain clients initialized successfully - will retry during processing');
+    }
   }
 
   /**
@@ -199,6 +239,11 @@ export class BaseIndexer implements BaseIndexerInterface {
     const processChain = async () => {
       if (!this.isRunning) return;
 
+      this.logger.debug(`🔄 Processing cycle starting for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        timestamp: new Date().toISOString()
+      });
+
       try {
         await this.processChainBlocks(chainConfig);
       } catch (error) {
@@ -214,12 +259,21 @@ export class BaseIndexer implements BaseIndexerInterface {
 
       // Schedule next processing cycle
       if (this.isRunning) {
+        this.logger.debug(`⏰ Scheduling next processing cycle for ${chainConfig.name}`, {
+          chainId: chainConfig.chainId,
+          nextCheckIn: chainConfig.blockPollingInterval,
+          timestamp: new Date().toISOString()
+        });
+        
         const timeoutId = setTimeout(processChain, chainConfig.blockPollingInterval);
         this.processingLoops.set(chainConfig.chainId, timeoutId);
       }
     };
 
-    // Start the processing loop
+    // Start the processing loop immediately
+    this.logger.info(`🚀 Starting immediate first check for ${chainConfig.name}`, {
+      chainId: chainConfig.chainId
+    });
     processChain();
     
     this.logger.info(`Started processing loop for ${chainConfig.name}`, {
@@ -240,10 +294,36 @@ export class BaseIndexer implements BaseIndexerInterface {
       throw new Error(`No state found for chain ${chainConfig.chainId}`);
     }
 
+    // Check if client is healthy before processing
+    try {
+      const isHealthy = await client.isHealthy();
+      if (!isHealthy) {
+        this.logger.debug(`Client for chain ${chainConfig.chainId} is unhealthy, attempting reconnection...`);
+        await client.initialize(); // Try to reinitialize
+      }
+    } catch (error) {
+      this.logger.warn(`Health check failed for chain ${chainConfig.chainId}, will retry next cycle`, {
+        chainId: chainConfig.chainId,
+        error: (error as Error).message
+      });
+      return; // Skip this cycle
+    }
+
     try {
       // Get current blockchain state
+      this.logger.debug(`📡 Making RPC call to get latest block for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        rpcUrl: chainConfig.rpcUrl
+      });
+      
       this.metrics.rpcCallsCount++;
       const latestBlockNumber = await client.getLatestBlockNumber();
+      
+      this.logger.info(`📊 Latest block fetched for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        latestBlock: latestBlockNumber.toString(),
+        currentlyProcessed: currentState.lastBlock.toString()
+      });
       
       // Determine range to process
       const fromBlock = currentState.lastBlock === BigInt(0) 
@@ -252,8 +332,23 @@ export class BaseIndexer implements BaseIndexerInterface {
       
       const toBlock = latestBlockNumber;
 
+      // Log the check even if no new blocks - make this INFO level so it's always visible
+      this.logger.info(`🔍 Block range check for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        lastProcessed: currentState.lastBlock.toString(),
+        latestOnChain: latestBlockNumber.toString(),
+        nextToProcess: fromBlock.toString(),
+        blocksToProcess: fromBlock <= toBlock ? Number(toBlock - fromBlock + BigInt(1)) : 0,
+        hasNewBlocks: fromBlock <= toBlock
+      });
+
       // Skip if no new blocks
       if (fromBlock > toBlock) {
+        this.logger.info(`✋ No new blocks to process on ${chainConfig.name} - waiting for new blocks`, {
+          chainId: chainConfig.chainId,
+          nextExpectedBlock: fromBlock.toString(),
+          latestOnChain: toBlock.toString()
+        });
         return;
       }
 
@@ -261,7 +356,7 @@ export class BaseIndexer implements BaseIndexerInterface {
       const maxBatchSize = 100;
       const totalBlocks = Number(toBlock - fromBlock + BigInt(1));
       
-      this.logger.debug(`Processing blocks for ${chainConfig.name}`, {
+      this.logger.info(`🚀 Processing blocks for ${chainConfig.name}`, {
         chainId: chainConfig.chainId,
         fromBlock: fromBlock.toString(),
         toBlock: toBlock.toString(),
@@ -271,6 +366,12 @@ export class BaseIndexer implements BaseIndexerInterface {
       for (let i = 0; i < totalBlocks; i += maxBatchSize) {
         const batchFromBlock = fromBlock + BigInt(i);
         const batchToBlock = fromBlock + BigInt(Math.min(i + maxBatchSize - 1, totalBlocks - 1));
+        
+        this.logger.debug(`📦 Processing batch ${i/maxBatchSize + 1} for ${chainConfig.name}`, {
+          chainId: chainConfig.chainId,
+          batchFrom: batchFromBlock.toString(),
+          batchTo: batchToBlock.toString()
+        });
         
         await this.processBatch(chainConfig, client, batchFromBlock, batchToBlock);
       }
@@ -283,16 +384,20 @@ export class BaseIndexer implements BaseIndexerInterface {
       this.metrics.blockProcessingTimes.push(processingTime);
       this.metrics.blocksProcessed += totalBlocks;
 
-      if (totalBlocks > 0) {
-        this.logger.info(`Processed ${totalBlocks} blocks for ${chainConfig.name}`, {
-          chainId: chainConfig.chainId,
-          fromBlock: fromBlock.toString(),
-          toBlock: toBlock.toString(),
-          processingTimeMs: processingTime
-        });
-      }
+      this.logger.info(`✅ Completed processing ${totalBlocks} blocks for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        fromBlock: fromBlock.toString(),
+        toBlock: toBlock.toString(),
+        processingTimeMs: processingTime,
+        newTotalProcessed: this.metrics.blocksProcessed
+      });
 
     } catch (error) {
+      this.logger.error(`❌ Failed to process blocks for ${chainConfig.name}`, {
+        chainId: chainConfig.chainId,
+        error: (error as Error).message,
+        stack: (error as Error).stack
+      });
       throw new Error(`Failed to process blocks for chain ${chainConfig.chainId}: ${(error as Error).message}`);
     }
   }

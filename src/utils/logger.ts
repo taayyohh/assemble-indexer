@@ -58,7 +58,7 @@ export class IndexerLogger implements Logger {
     const color = colors[level];
     
     const consoleMessage = `${color}[${timestamp}] ${level.toUpperCase()}${reset}: ${message}`;
-    const extraFormatted = extra ? ` ${JSON.stringify(extra)}` : '';
+    const extraFormatted = extra ? ` ${JSON.stringify(extra, this.bigIntReplacer)}` : '';
     
     return consoleMessage + extraFormatted;
   }
@@ -72,7 +72,7 @@ export class IndexerLogger implements Logger {
       ...(extra && { extra })
     };
 
-    return JSON.stringify(logEntry) + '\n';
+    return JSON.stringify(logEntry, this.bigIntReplacer) + '\n';
   }
 
   private writeToFile(content: string): void {
@@ -141,5 +141,13 @@ export class IndexerLogger implements Logger {
 
   getLevel(): LogLevel {
     return this.level;
+  }
+
+  // BigInt serialization helper
+  private bigIntReplacer(key: string, value: any): any {
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+    return value;
   }
 } 
