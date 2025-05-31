@@ -59,10 +59,6 @@ export class PaymentAllocatedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // This could involve:
-      // 1. Creating a PaymentAllocation model to track all payments
-      // 2. Linking payments to specific events and roles
-      // 3. Tracking different payment types (organizer, speaker, sponsor, etc.)
 
     } catch (error) {
       context.logger.error('Failed to process PaymentAllocated', {

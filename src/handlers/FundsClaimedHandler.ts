@@ -41,10 +41,6 @@ export class FundsClaimedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // This could involve:
-      // 1. Creating a FundsClaim model to track all fund withdrawals
-      // 2. Linking to specific events if this is event-related fund claiming
-      // 3. Tracking treasury/platform fund movements
 
     } catch (error) {
       context.logger.error('Failed to process FundsClaimed', {

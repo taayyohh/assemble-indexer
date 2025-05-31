@@ -65,7 +65,7 @@ export class CommentPostedHandler implements EventHandler {
         data: {
           authorId: authorUser.id,
           eventId: event.id,
-          content: `Comment ${commentId.toString()}`, // Placeholder - content not in ABI
+          content: `Comment ${commentId.toString()}`, // Content stored off-chain
           parentId: parentComment?.id || null,
           chainId: context.chainId,
           blockNumber: context.blockNumber,

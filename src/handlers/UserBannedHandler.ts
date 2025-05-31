@@ -46,7 +46,7 @@ export class UserBannedHandler implements EventHandler {
         });
       }
 
-      // Update user to mark as banned
+      // Update user status to track ban
       const updatedUser = await context.prisma.user.update({
         where: { id: bannedUser.id },
         data: {
@@ -54,7 +54,17 @@ export class UserBannedHandler implements EventHandler {
         }
       });
 
-      // Log the ban action
+      // Create a processed event record to track this ban action
+      await context.prisma.processedEvent.create({
+        data: {
+          chainId: context.chainId,
+          blockNumber: context.blockNumber,
+          transactionHash: context.transactionHash,
+          logIndex: log.logIndex,
+          eventName: this.eventName
+        }
+      });
+
       context.logger.info('UserBanned processed successfully', {
         bannedUserId: updatedUser.id,
         bannedUserAddress: updatedUser.address,
@@ -64,11 +74,6 @@ export class UserBannedHandler implements EventHandler {
         transactionHash: context.transactionHash,
         blockNumber: context.blockNumber.toString()
       });
-
-      // This could involve:
-      // 1. Adding a 'banned' field to User model
-      // 2. Creating a UserBan model to track ban history
-      // 3. Implementing ban enforcement in application logic
 
     } catch (error) {
       context.logger.error('Failed to process UserBanned', {

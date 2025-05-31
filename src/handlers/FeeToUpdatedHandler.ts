@@ -16,7 +16,50 @@ export class FeeToUpdatedHandler implements EventHandler {
         transactionHash: context.transactionHash
       });
 
-      // Log the fee recipient update for administrative tracking
+      // Create users for old and new fee recipients if they don't exist
+      if (oldFeeTo && oldFeeTo !== '0x0000000000000000000000000000000000000000') {
+        let oldFeeUser = await context.prisma.user.findUnique({
+          where: { address: oldFeeTo.toLowerCase() }
+        });
+
+        if (!oldFeeUser) {
+          oldFeeUser = await context.prisma.user.create({
+            data: {
+              address: oldFeeTo.toLowerCase(),
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        }
+      }
+
+      if (newFeeTo && newFeeTo !== '0x0000000000000000000000000000000000000000') {
+        let newFeeUser = await context.prisma.user.findUnique({
+          where: { address: newFeeTo.toLowerCase() }
+        });
+
+        if (!newFeeUser) {
+          newFeeUser = await context.prisma.user.create({
+            data: {
+              address: newFeeTo.toLowerCase(),
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        }
+      }
+
+      // Track the fee recipient change as a processed event for audit trail
+      await context.prisma.processedEvent.create({
+        data: {
+          chainId: context.chainId,
+          blockNumber: context.blockNumber,
+          transactionHash: context.transactionHash,
+          logIndex: log.logIndex,
+          eventName: this.eventName
+        }
+      });
+
       context.logger.info('FeeToUpdated processed successfully', {
         oldFeeTo,
         newFeeTo,
@@ -24,11 +67,6 @@ export class FeeToUpdatedHandler implements EventHandler {
         transactionHash: context.transactionHash,
         blockNumber: context.blockNumber.toString()
       });
-
-      // This could involve:
-      // 1. Creating a FeeConfiguration model to track fee recipient changes
-      // 2. Storing historical fee recipient addresses
-      // 3. Tracking when and who made configuration changes
 
     } catch (error) {
       context.logger.error('Failed to process FeeToUpdated', {

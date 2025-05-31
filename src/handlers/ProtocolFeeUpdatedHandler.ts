@@ -16,7 +16,17 @@ export class ProtocolFeeUpdatedHandler implements EventHandler {
         transactionHash: context.transactionHash
       });
 
-      // Log the protocol fee update for administrative tracking
+      // Track the protocol fee change as a processed event for audit trail
+      await context.prisma.processedEvent.create({
+        data: {
+          chainId: context.chainId,
+          blockNumber: context.blockNumber,
+          transactionHash: context.transactionHash,
+          logIndex: log.logIndex,
+          eventName: this.eventName
+        }
+      });
+
       context.logger.info('ProtocolFeeUpdated processed successfully', {
         oldFee: oldFee.toString(),
         newFee: newFee.toString(),
@@ -24,11 +34,6 @@ export class ProtocolFeeUpdatedHandler implements EventHandler {
         transactionHash: context.transactionHash,
         blockNumber: context.blockNumber.toString()
       });
-
-      // This could involve:
-      // 1. Creating a ProtocolFeeConfiguration model to track fee changes
-      // 2. Storing historical fee percentages with timestamps
-      // 3. Tracking fee change patterns and governance decisions
 
     } catch (error) {
       context.logger.error('Failed to process ProtocolFeeUpdated', {

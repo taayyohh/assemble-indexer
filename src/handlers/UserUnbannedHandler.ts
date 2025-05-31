@@ -54,6 +54,17 @@ export class UserUnbannedHandler implements EventHandler {
         }
       });
 
+      // Create a processed event record to track this unban action
+      await context.prisma.processedEvent.create({
+        data: {
+          chainId: context.chainId,
+          blockNumber: context.blockNumber,
+          transactionHash: context.transactionHash,
+          logIndex: log.logIndex,
+          eventName: this.eventName
+        }
+      });
+
       // Log the unban action
       context.logger.info('UserUnbanned processed successfully', {
         unbannedUserId: updatedUser.id,
@@ -65,10 +76,6 @@ export class UserUnbannedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // This could involve:
-      // 1. Adding a 'banned' field to User model
-      // 2. Creating a UserBan model to track ban/unban history
-      // 3. Implementing ban enforcement in application logic
 
     } catch (error) {
       context.logger.error('Failed to process UserUnbanned', {
