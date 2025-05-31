@@ -1,0 +1,92 @@
+# ===== ENVIRONMENT & SECRETS =====
+.env
+.env.*
+!.env.example
+env.example.local
+
+# ===== NODE.JS =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===== BUILD OUTPUTS =====
+dist/
+build/
+*.tsbuildinfo
+
+# ===== LOGS =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===== RUNTIME DATA =====
+pids/
+*.pid
+*.seed
+*.pid.lock
+lib-cov/
+coverage/
+.nyc_output/
+
+# ===== PRISMA =====
+# Keep schema but ignore migrations in development
+# prisma/migrations/
+
+# ===== DATABASE =====
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# ===== TEMPORARY FILES =====
+tmp/
+temp/
+.tmp
+.temp
+
+# ===== OS GENERATED =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===== EDITORS & IDEs =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== TESTING =====
+.jest/
+coverage/
+*.lcov
+
+# ===== MISC =====
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# ===== BLOCKCHAIN SPECIFIC =====
+# Private keys, mnemonics, etc.
+*.key
+*.pem
+mnemonic.txt
+private_key.txt
+wallet.json
+
+# ===== LOCAL DEVELOPMENT =====
+.local
+local/
+dev/
+test-data/ 

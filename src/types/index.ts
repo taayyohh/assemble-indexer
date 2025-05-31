@@ -25,6 +25,7 @@ export interface IndexerConfig {
     maxRetries: number;
     baseDelay: number;
     maxDelay: number;
+    jitter: boolean;
   };
   circuitBreaker: {
     threshold: number;
