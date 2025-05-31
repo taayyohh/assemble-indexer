@@ -23,7 +23,22 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "deploy": "chmod +x deploy.sh && ./deploy.sh",
+    "deploy:prod": "pnpm build && pm2 start assemble-indexer",
+    "deploy:dev": "pnpm build && pm2 start assemble-dev-mode",
+    "deploy:sepolia": "pnpm build && pm2 start assemble-indexer-sepolia",
+    "deploy:single": "pnpm build && pm2 start ecosystem.config.cjs --only",
+    "pm2:status": "pm2 status",
+    "pm2:logs": "pm2 logs",
+    "pm2:monitor": "pm2 monit",
+    "pm2:restart": "pm2 restart all",
+    "pm2:stop": "pm2 stop all",
+    "pm2:delete": "pm2 delete all",
+    "audit:handlers": "tsx audit-handlers.ts",
+    "audit:functionality": "tsx detailed-functionality-audit.ts",
+    "audit:abi": "tsx validate-handlers-abi.ts",
+    "audit:all": "npm run audit:handlers && npm run audit:functionality && npm run audit:abi"
   },
   "keywords": [
     "blockchain",
