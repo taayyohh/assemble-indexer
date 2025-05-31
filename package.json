@@ -55,6 +55,7 @@
     "@graphql-tools/schema": "^10.0.0",
     "@imaginarylabs/assemble": "^0.1.0",
     "@prisma/client": "^5.7.1",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
     "graphql-relay": "^0.10.0",
     "graphql-yoga": "^5.0.0",
