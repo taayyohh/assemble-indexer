@@ -16,20 +16,42 @@ export class FriendAddedHandler implements EventHandler {
         transactionHash: context.transactionHash
       });
 
-      // Ensure both users exist
-      const users = await Promise.all([
-        this.ensureUserExists(user1.toLowerCase(), context),
-        this.ensureUserExists(user2.toLowerCase(), context)
-      ]);
+      // Ensure user1 exists
+      let user1Record = await context.prisma.user.findUnique({
+        where: { address: user1.toLowerCase() }
+      });
 
-      const [userRecord1, userRecord2] = users;
+      if (!user1Record) {
+        user1Record = await context.prisma.user.create({
+          data: {
+            address: user1.toLowerCase(),
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        });
+      }
+
+      // Ensure user2 exists
+      let user2Record = await context.prisma.user.findUnique({
+        where: { address: user2.toLowerCase() }
+      });
+
+      if (!user2Record) {
+        user2Record = await context.prisma.user.create({
+          data: {
+            address: user2.toLowerCase(),
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        });
+      }
 
       // Check if friendship already exists
       const existingFriendship = await context.prisma.friend.findUnique({
         where: {
           userId_friendId: {
-            userId: userRecord1.id,
-            friendId: userRecord2.id
+            userId: user1Record.id,
+            friendId: user2Record.id
           }
         }
       });
@@ -47,8 +69,8 @@ export class FriendAddedHandler implements EventHandler {
       await Promise.all([
         context.prisma.friend.create({
           data: {
-            userId: userRecord1.id,
-            friendId: userRecord2.id,
+            userId: user1Record.id,
+            friendId: user2Record.id,
             chainId: context.chainId,
             blockNumber: context.blockNumber,
             transactionHash: context.transactionHash,
@@ -57,8 +79,8 @@ export class FriendAddedHandler implements EventHandler {
         }),
         context.prisma.friend.create({
           data: {
-            userId: userRecord2.id,
-            friendId: userRecord1.id,
+            userId: user2Record.id,
+            friendId: user1Record.id,
             chainId: context.chainId,
             blockNumber: context.blockNumber,
             transactionHash: context.transactionHash,
@@ -68,8 +90,8 @@ export class FriendAddedHandler implements EventHandler {
       ]);
 
       context.logger.info('FriendAdded processed successfully', {
-        user1Id: userRecord1.id,
-        user2Id: userRecord2.id,
+        user1Id: user1Record.id,
+        user2Id: user2Record.id,
         user1Address: user1.toLowerCase(),
         user2Address: user2.toLowerCase(),
         chainId: context.chainId,

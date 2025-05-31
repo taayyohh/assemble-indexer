@@ -5,15 +5,13 @@ export class EventTippedHandler implements EventHandler {
 
   async handle(log: LogData, decodedData: any, context: EventContext): Promise<void> {
     try {
-      const { eventId, tipper, receiver, amount, message } = decodedData;
+      const { eventId, tipper, amount } = decodedData;
 
       context.logger.info('Processing EventTipped', {
         eventName: this.eventName,
         eventId: eventId.toString(),
         tipper,
-        receiver,
         amount: amount.toString(),
-        message,
         chainId: context.chainId,
         blockNumber: context.blockNumber.toString(),
         transactionHash: context.transactionHash
@@ -34,24 +32,10 @@ export class EventTippedHandler implements EventHandler {
         });
       }
 
-      // Ensure receiver user exists
-      let receiverUser = await context.prisma.user.findUnique({
-        where: { address: receiver.toLowerCase() }
-      });
-
-      if (!receiverUser) {
-        receiverUser = await context.prisma.user.create({
-          data: {
-            address: receiver.toLowerCase(),
-            createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        });
-      }
-
-      // Find the event
+      // Find the event to get the receiver (event organizer)
       const event = await context.prisma.event.findUnique({
-        where: { eventId: eventId.toString() }
+        where: { eventId: eventId.toString() },
+        include: { creator: true }
       });
 
       if (!event) {
@@ -63,6 +47,9 @@ export class EventTippedHandler implements EventHandler {
         return;
       }
 
+      // Receiver is the event organizer/creator
+      const receiverUser = event.creator;
+
       // Create tip record using EventTip model
       const tip = await context.prisma.eventTip.create({
         data: {
@@ -70,7 +57,7 @@ export class EventTippedHandler implements EventHandler {
           tipperId: tipperUser.id,
           receiverId: receiverUser.id,
           amount: amount.toString(),
-          message: message || null,
+          message: null, // Message not provided in ABI
           chainId: context.chainId,
           blockNumber: context.blockNumber,
           transactionHash: context.transactionHash,

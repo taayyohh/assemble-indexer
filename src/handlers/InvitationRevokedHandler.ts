@@ -59,13 +59,13 @@ export class InvitationRevokedHandler implements EventHandler {
         return;
       }
 
-      // Find and update the invitation status to EXPIRED (revoked)
-      const updatedInvitation = await context.prisma.invitation.updateMany({
+      // Update invitation status to revoked
+      const updatedInvitations = await context.prisma.invitation.updateMany({
         where: {
-          senderId: organizerUser.id,
-          receiverId: inviteeUser.id,
           eventId: event.id,
-          status: 'PENDING' // Only revoke pending invitations
+          receiverId: inviteeUser.id,
+          senderId: organizerUser.id,
+          status: 'PENDING'
         },
         data: {
           status: 'EXPIRED', // Using EXPIRED to indicate revoked
@@ -73,7 +73,7 @@ export class InvitationRevokedHandler implements EventHandler {
         }
       });
 
-      if (updatedInvitation.count === 0) {
+      if (updatedInvitations.count === 0) {
         context.logger.warn('No pending invitation found to revoke', {
           senderId: organizerUser.id,
           receiverId: inviteeUser.id,
@@ -86,9 +86,9 @@ export class InvitationRevokedHandler implements EventHandler {
 
       context.logger.info('InvitationRevoked processed successfully', {
         eventId: event.id,
-        senderId: organizerUser.id,
-        receiverId: inviteeUser.id,
-        revokedCount: updatedInvitation.count,
+        inviteeId: inviteeUser.id,
+        organizerId: organizerUser.id,
+        revokedInvitations: updatedInvitations.count,
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });

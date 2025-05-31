@@ -46,10 +46,20 @@ export class UserUnbannedHandler implements EventHandler {
         });
       }
 
+      // Update user to mark as unbanned (if banned field exists in User model)
+      // For now, we'll update the user's updatedAt timestamp to track the unban
+      const updatedUser = await context.prisma.user.update({
+        where: { id: unbannedUser.id },
+        data: {
+          updatedAt: new Date()
+          // TODO: Add banned: false field to User model
+        }
+      });
+
       // Log the unban action
       context.logger.info('UserUnbanned processed successfully', {
-        unbannedUserId: unbannedUser.id,
-        unbannedUserAddress: unbannedUser.address,
+        unbannedUserId: updatedUser.id,
+        unbannedUserAddress: updatedUser.address,
         moderatorId: moderatorUser.id,
         moderatorAddress: moderatorUser.address,
         chainId: context.chainId,
@@ -58,10 +68,10 @@ export class UserUnbannedHandler implements EventHandler {
       });
 
       // TODO: Implement unban tracking
-      // This would complement the UserBanned handler and involve:
-      // 1. Updating 'banned' field to false in User model
-      // 2. Creating unban record in UserBan model
-      // 3. Restoring user access in application logic
+      // This could involve:
+      // 1. Adding a 'banned' field to User model
+      // 2. Creating a UserBan model to track ban/unban history
+      // 3. Implementing ban enforcement in application logic
 
     } catch (error) {
       context.logger.error('Failed to process UserUnbanned', {

@@ -5,27 +5,56 @@ export class TicketUsedHandler implements EventHandler {
 
   async handle(log: LogData, decodedData: any, context: EventContext): Promise<void> {
     try {
-      const { eventId, ticketId, user, timestamp } = decodedData;
+      const { eventId, user, ticketTokenId, tierId } = decodedData;
 
       context.logger.info('Processing TicketUsed', {
         eventName: this.eventName,
         eventId: eventId.toString(),
-        ticketId: ticketId.toString(),
         user,
-        timestamp: timestamp.toString(),
+        ticketTokenId: ticketTokenId.toString(),
+        tierId: tierId.toString(),
         chainId: context.chainId,
         blockNumber: context.blockNumber.toString(),
         transactionHash: context.transactionHash
       });
 
-      // Find the ticket
+      // Ensure user exists
+      let ticketUser = await context.prisma.user.findUnique({
+        where: { address: user.toLowerCase() }
+      });
+
+      if (!ticketUser) {
+        ticketUser = await context.prisma.user.create({
+          data: {
+            address: user.toLowerCase(),
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        });
+      }
+
+      // Find the ticket by ticketTokenId (ERC-6909 token ID)
       const ticket = await context.prisma.ticket.findUnique({
-        where: { ticketId: ticketId.toString() }
+        where: { ticketId: ticketTokenId.toString() }
       });
 
       if (!ticket) {
         context.logger.error('Ticket not found for usage', {
-          ticketId: ticketId.toString(),
+          ticketTokenId: ticketTokenId.toString(),
+          chainId: context.chainId,
+          transactionHash: context.transactionHash
+        });
+        return;
+      }
+
+      // Find the event
+      const event = await context.prisma.event.findUnique({
+        where: { eventId: eventId.toString() }
+      });
+
+      if (!event) {
+        context.logger.error('Event not found for ticket usage', {
+          eventId: eventId.toString(),
           chainId: context.chainId,
           transactionHash: context.transactionHash
         });
@@ -44,11 +73,12 @@ export class TicketUsedHandler implements EventHandler {
       // Create a check-in record to track when the ticket was used
       const checkIn = await context.prisma.checkIn.create({
         data: {
-          userId: ticket.ownerId,
+          userId: ticketUser.id,
           ticketId: ticket.id,
-          eventId: ticket.eventId,
-          checkInType: 'MANUAL', // Using correct field name
-          timestamp: new Date(Number(timestamp) * 1000),
+          eventId: event.id,
+          checkInType: 'MANUAL',
+          timestamp: new Date(),
+          notes: `Ticket used - Tier: ${tierId.toString()}`,
           chainId: context.chainId,
           blockNumber: context.blockNumber,
           transactionHash: context.transactionHash,
@@ -59,9 +89,11 @@ export class TicketUsedHandler implements EventHandler {
 
       context.logger.info('TicketUsed processed successfully', {
         ticketId: updatedTicket.id,
-        onChainTicketId: updatedTicket.ticketId,
+        ticketTokenId: ticketTokenId.toString(),
+        tierId: tierId.toString(),
         status: updatedTicket.status,
         checkInId: checkIn.id,
+        userId: ticketUser.id,
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });

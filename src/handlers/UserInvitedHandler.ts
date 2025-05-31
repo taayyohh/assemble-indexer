@@ -5,29 +5,27 @@ export class UserInvitedHandler implements EventHandler {
 
   async handle(log: LogData, decodedData: any, context: EventContext): Promise<void> {
     try {
-      const { eventId, inviter, invitee, message, expiresAt } = decodedData;
+      const { eventId, invitee, organizer } = decodedData;
 
       context.logger.info('Processing UserInvited', {
         eventName: this.eventName,
         eventId: eventId.toString(),
-        inviter,
         invitee,
-        message,
-        expiresAt: expiresAt ? expiresAt.toString() : null,
+        organizer,
         chainId: context.chainId,
         blockNumber: context.blockNumber.toString(),
         transactionHash: context.transactionHash
       });
 
-      // Ensure inviter user exists
-      let inviterUser = await context.prisma.user.findUnique({
-        where: { address: inviter.toLowerCase() }
+      // Ensure organizer user exists
+      let organizerUser = await context.prisma.user.findUnique({
+        where: { address: organizer.toLowerCase() }
       });
 
-      if (!inviterUser) {
-        inviterUser = await context.prisma.user.create({
+      if (!organizerUser) {
+        organizerUser = await context.prisma.user.create({
           data: {
-            address: inviter.toLowerCase(),
+            address: organizer.toLowerCase(),
             createdAt: new Date(),
             updatedAt: new Date()
           }
@@ -66,12 +64,12 @@ export class UserInvitedHandler implements EventHandler {
       // Create invitation record
       const invitation = await context.prisma.invitation.create({
         data: {
-          senderId: inviterUser.id,
+          senderId: organizerUser.id,
           receiverId: inviteeUser.id,
           eventId: event.id,
           status: 'PENDING',
-          message: message || null,
-          expiresAt: expiresAt ? new Date(Number(expiresAt) * 1000) : null,
+          message: null, // Message not provided in ABI
+          expiresAt: null, // Expiration not provided in ABI
           chainId: context.chainId,
           blockNumber: context.blockNumber,
           transactionHash: context.transactionHash,
@@ -83,11 +81,10 @@ export class UserInvitedHandler implements EventHandler {
 
       context.logger.info('UserInvited processed successfully', {
         invitationId: invitation.id,
-        senderId: inviterUser.id,
+        senderId: organizerUser.id,
         receiverId: inviteeUser.id,
         eventId: event.id,
         status: invitation.status,
-        expiresAt: invitation.expiresAt,
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });

@@ -35,10 +35,7 @@ export { ProtocolFeeUpdatedHandler } from './ProtocolFeeUpdatedHandler';
 export { UserBannedHandler } from './UserBannedHandler';
 export { UserUnbannedHandler } from './UserUnbannedHandler';
 
-// Badge System Handlers (ERC-6909)
-export { BadgeIssuedHandler } from './BadgeIssuedHandler';
-
-// ERC Standard Handlers (ERC-1155)
+// ERC-6909 Standard Handlers
 export { ApprovalHandler } from './ApprovalHandler';
 export { TransferHandler } from './TransferHandler';
 export { OperatorSetHandler } from './OperatorSetHandler';

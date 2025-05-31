@@ -5,14 +5,13 @@ export class CommentPostedHandler implements EventHandler {
 
   async handle(log: LogData, decodedData: any, context: EventContext): Promise<void> {
     try {
-      const { eventId, commentId, author, content, parentId } = decodedData;
+      const { eventId, commentId, author, parentId } = decodedData;
 
       context.logger.info('Processing CommentPosted', {
         eventName: this.eventName,
         eventId: eventId.toString(),
         commentId: commentId.toString(),
         author,
-        content,
         parentId: parentId ? parentId.toString() : null,
         chainId: context.chainId,
         blockNumber: context.blockNumber.toString(),
@@ -51,21 +50,21 @@ export class CommentPostedHandler implements EventHandler {
       // Find parent comment if this is a reply
       let parentComment = null;
       if (parentId && parentId.toString() !== '0') {
+        // TODO: Need to add on-chain commentId field to properly find parent
         parentComment = await context.prisma.comment.findFirst({
           where: {
             eventId: event.id,
-            // We need to store the on-chain comment ID to find parent comments
-            // For now, we'll use a simple approach
+            authorId: authorUser.id // Temporary workaround
           }
         });
       }
 
-      // Create comment record
+      // Create comment record (content must be provided off-chain or stored separately)
       const comment = await context.prisma.comment.create({
         data: {
           authorId: authorUser.id,
           eventId: event.id,
-          content: content,
+          content: `Comment ${commentId.toString()}`, // Placeholder - content not in ABI
           parentId: parentComment?.id || null,
           chainId: context.chainId,
           blockNumber: context.blockNumber,
@@ -78,13 +77,15 @@ export class CommentPostedHandler implements EventHandler {
 
       context.logger.info('CommentPosted processed successfully', {
         commentId: comment.id,
+        onChainCommentId: commentId.toString(),
         authorId: authorUser.id,
         eventId: event.id,
-        content: comment.content,
         parentId: comment.parentId,
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });
+
+      // TODO: Update Comment model to store on-chain commentId for proper parent/child relationships
 
     } catch (error) {
       context.logger.error('Failed to process CommentPosted', {

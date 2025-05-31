@@ -5,14 +5,13 @@ export class RSVPUpdatedHandler implements EventHandler {
 
   async handle(log: LogData, decodedData: any, context: EventContext): Promise<void> {
     try {
-      const { eventId, user, status, notes } = decodedData;
+      const { eventId, user, status } = decodedData;
 
       context.logger.info('Processing RSVPUpdated', {
         eventName: this.eventName,
         eventId: eventId.toString(),
         user,
         status,
-        notes,
         chainId: context.chainId,
         blockNumber: context.blockNumber.toString(),
         transactionHash: context.transactionHash
@@ -67,7 +66,7 @@ export class RSVPUpdatedHandler implements EventHandler {
         },
         update: {
           status: rsvpStatus as any,
-          notes: notes || null,
+          notes: null, // Notes not provided in ABI
           chainId: context.chainId,
           blockNumber: context.blockNumber,
           transactionHash: context.transactionHash,
@@ -78,7 +77,7 @@ export class RSVPUpdatedHandler implements EventHandler {
           userId: userRecord.id,
           eventId: event.id,
           status: rsvpStatus as any,
-          notes: notes || null,
+          notes: null, // Notes not provided in ABI
           chainId: context.chainId,
           blockNumber: context.blockNumber,
           transactionHash: context.transactionHash,

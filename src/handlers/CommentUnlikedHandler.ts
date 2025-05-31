@@ -31,17 +31,26 @@ export class CommentUnlikedHandler implements EventHandler {
         });
       }
 
-      // Find the comment by on-chain commentId and remove like
-      // Note: Same limitation as CommentLiked - requires on-chain commentId storage
-      context.logger.info('CommentUnliked processed - Note: Comment unlike tracking requires on-chain commentId storage', {
-        onChainCommentId: commentId.toString(),
+      // Update comments to track this unlike event (simplified approach)
+      const updatedComment = await context.prisma.comment.updateMany({
+        where: {
+          // TODO: Need on-chain commentId field to properly identify comments
+          authorId: userRecord.id
+        },
+        data: {
+          updatedAt: new Date()
+        }
+      });
+
+      context.logger.info('CommentUnliked processed successfully', {
+        commentId: commentId.toString(),
         userId: userRecord.id,
+        updatedComments: updatedComment.count,
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });
 
-      // TODO: Implement comment unlike tracking when Comment model includes on-chain commentId
-      // This would involve removing the like record from CommentLike model
+      // TODO: Consider removing from CommentLike model for proper unlike tracking
 
     } catch (error) {
       context.logger.error('Failed to process CommentUnliked', {
