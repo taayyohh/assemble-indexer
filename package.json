@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Protocol-agnostic blockchain indexer for Assemble Protocol events",
   "main": "dist/index.js",
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/demo.ts",

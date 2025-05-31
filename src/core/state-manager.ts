@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import type { IndexerState, Logger } from '@/types';
+import type { IndexerState, Logger } from '../types';
 
 export class StateManager {
   private readonly prisma: PrismaClient;

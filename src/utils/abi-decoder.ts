@@ -1,6 +1,6 @@
 import { decodeEventLog, type Address, type Hex } from 'viem';
 import AssembleABI from '../abi/Assemble.json';
-import type { LogData } from '@/types';
+import type { LogData } from '../types';
 
 // Contract address from the deployment
 export const ASSEMBLE_CONTRACT_ADDRESS: Address = '0x00000004FE7c1E461A1703AF603F1A5F080Be253';

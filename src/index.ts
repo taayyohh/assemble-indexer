@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { BaseIndexer } from '@/core/base-indexer';
-import { loadConfig, validateConfig } from '@/utils/config';
-import * as handlers from '@/handlers';
+import { BaseIndexer } from './core/base-indexer';
+import { loadConfig, validateConfig } from './utils/config';
+import * as handlers from './handlers';
 
 // Load environment variables
 dotenv.config();

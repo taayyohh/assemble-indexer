@@ -4,7 +4,7 @@ import type {
   AsyncRetryFunction,
   BackoffOptions,
   Logger
-} from '@/types';
+} from '../types';
 
 export class RetryManager {
   private readonly options: RetryOptions;

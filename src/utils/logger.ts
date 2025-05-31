@@ -1,6 +1,6 @@
 import { appendFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
-import type { Logger } from '@/types';
+import type { Logger } from '../types';
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 

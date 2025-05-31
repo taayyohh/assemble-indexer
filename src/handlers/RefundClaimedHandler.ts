@@ -1,4 +1,4 @@
-import type { EventHandler, EventContext, LogData } from '@/types';
+import type { EventHandler, EventContext, LogData } from '../types';
 
 export class RefundClaimedHandler implements EventHandler {
   eventName = 'RefundClaimed';

@@ -9,12 +9,12 @@ import type {
   EventHandler,
   EventContext,
   LogData 
-} from '@/types';
-import { IndexerLogger } from '@/utils/logger';
+} from '../types';
+import { IndexerLogger } from '../utils/logger';
 import { RetryManager } from './retry-manager';
 import { StateManager } from './state-manager';
 import { BlockchainClient } from './blockchain-client';
-import { abiDecoder } from '@/utils/abi-decoder';
+import { abiDecoder } from '../utils/abi-decoder';
 
 export class BaseIndexer implements BaseIndexerInterface {
   private readonly config: IndexerConfig;

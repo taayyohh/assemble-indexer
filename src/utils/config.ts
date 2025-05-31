@@ -1,4 +1,4 @@
-import type { IndexerConfig, ChainConfig } from '@/types';
+import type { IndexerConfig, ChainConfig } from '../types';
 
 /**
  * Load configuration from environment variables

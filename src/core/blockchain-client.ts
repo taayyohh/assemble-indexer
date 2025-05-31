@@ -7,7 +7,7 @@ import {
   type Chain
 } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
-import type { ChainConfig, Logger, BlockData, LogData } from '@/types';
+import type { ChainConfig, Logger, BlockData, LogData } from '../types';
 import { RetryManager } from './retry-manager';
 
 // Define custom chains
