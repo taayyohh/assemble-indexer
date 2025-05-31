@@ -15,7 +15,7 @@ module.exports = {
       // Environment - will run all production chains
       env: {
         NODE_ENV: 'production',
-        CHAINS: 'ethereum,world,flow', // Comma-separated list of chains to run
+        CHAINS: 'ethereum,world-chain,flow-evm', // Standardized chain names
         DATABASE_URL: process.env.DATABASE_URL,
         LOG_LEVEL: 'info',
         
@@ -24,15 +24,18 @@ module.exports = {
         ETHEREUM_CONTRACT_ADDRESS: process.env.ETHEREUM_CONTRACT_ADDRESS,
         ETHEREUM_START_BLOCK: process.env.ETHEREUM_START_BLOCK || '0',
         
-        // World Chain
-        WORLD_RPC_URL: process.env.WORLD_RPC_URL,
-        WORLD_CONTRACT_ADDRESS: process.env.WORLD_CONTRACT_ADDRESS,
-        WORLD_START_BLOCK: process.env.WORLD_START_BLOCK || '0',
+        // World Chain - using new standardized names
+        WORLD_CHAIN_RPC_URL: process.env.WORLD_CHAIN_RPC_URL,
+        WORLD_CHAIN_WS_URL: process.env.WORLD_CHAIN_WS_URL,
+        START_BLOCK_WORLD_CHAIN: process.env.START_BLOCK_WORLD_CHAIN || '0',
         
-        // Flow EVM
-        FLOW_RPC_URL: process.env.FLOW_RPC_URL,
-        FLOW_CONTRACT_ADDRESS: process.env.FLOW_CONTRACT_ADDRESS,
-        FLOW_START_BLOCK: process.env.FLOW_START_BLOCK || '0'
+        // Flow EVM - using new standardized names  
+        FLOW_EVM_RPC_URL: process.env.FLOW_EVM_RPC_URL,
+        FLOW_EVM_WS_URL: process.env.FLOW_EVM_WS_URL,
+        START_BLOCK_FLOW_EVM: process.env.START_BLOCK_FLOW_EVM || '0',
+        
+        // Shared contract address for all chains
+        ASSEMBLE_CONTRACT_ADDRESS: process.env.ASSEMBLE_CONTRACT_ADDRESS
       },
 
       // Logging
@@ -67,7 +70,7 @@ module.exports = {
         CHAIN_ID: '1',
         CHAIN_NAME: 'ethereum',
         RPC_URL: process.env.ETHEREUM_RPC_URL,
-        CONTRACT_ADDRESS: process.env.ETHEREUM_CONTRACT_ADDRESS,
+        CONTRACT_ADDRESS: process.env.ASSEMBLE_CONTRACT_ADDRESS,
         START_BLOCK: process.env.ETHEREUM_START_BLOCK || '0',
         DATABASE_URL: process.env.DATABASE_URL,
         LOG_LEVEL: 'info'
@@ -93,9 +96,9 @@ module.exports = {
         NODE_ENV: 'production',
         CHAIN_ID: '480',
         CHAIN_NAME: 'world',
-        RPC_URL: process.env.WORLD_RPC_URL,
-        CONTRACT_ADDRESS: process.env.WORLD_CONTRACT_ADDRESS,
-        START_BLOCK: process.env.WORLD_START_BLOCK || '0',
+        RPC_URL: process.env.WORLD_CHAIN_RPC_URL,
+        CONTRACT_ADDRESS: process.env.ASSEMBLE_CONTRACT_ADDRESS,
+        START_BLOCK: process.env.START_BLOCK_WORLD_CHAIN || '0',
         DATABASE_URL: process.env.DATABASE_URL,
         LOG_LEVEL: 'info'
       },
@@ -120,9 +123,9 @@ module.exports = {
         NODE_ENV: 'production',
         CHAIN_ID: '747',
         CHAIN_NAME: 'flow-evm',
-        RPC_URL: process.env.FLOW_RPC_URL,
-        CONTRACT_ADDRESS: process.env.FLOW_CONTRACT_ADDRESS,
-        START_BLOCK: process.env.FLOW_START_BLOCK || '0',
+        RPC_URL: process.env.FLOW_EVM_RPC_URL,
+        CONTRACT_ADDRESS: process.env.ASSEMBLE_CONTRACT_ADDRESS,
+        START_BLOCK: process.env.START_BLOCK_FLOW_EVM || '0',
         DATABASE_URL: process.env.DATABASE_URL,
         LOG_LEVEL: 'info'
       },

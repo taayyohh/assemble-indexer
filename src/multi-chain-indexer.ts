@@ -5,25 +5,33 @@
  * 
  * Runs multiple blockchain indexers in parallel based on the CHAINS environment variable.
  * This allows starting all production chains with a single PM2 process.
+ * 
+ * Uses the same configuration system as the main indexer for consistency.
  */
 
 import { spawn, ChildProcess } from 'child_process';
 import * as path from 'path';
+import { loadConfig, validateConfig } from './utils/config';
+import type { ChainConfig } from './types';
 
-interface ChainConfig {
-  chainId: string;
-  chainName: string;
-  rpcUrl: string;
-  contractAddress: string;
-  startBlock: string;
-}
+// Load environment variables
+require('dotenv').config();
 
 class MultiChainIndexer {
-  private processes: Map<string, ChildProcess> = new Map();
+  private processes: Map<number, ChildProcess> = new Map();
   private isShuttingDown = false;
+  private config: ReturnType<typeof loadConfig>;
 
   constructor() {
     this.setupSignalHandlers();
+    
+    try {
+      this.config = loadConfig();
+      validateConfig(this.config);
+    } catch (error) {
+      console.error('❌ Configuration error:', (error as Error).message);
+      process.exit(1);
+    }
   }
 
   async start(): Promise<void> {
@@ -31,12 +39,14 @@ class MultiChainIndexer {
     
     if (chainsToRun.length === 0) {
       console.error('❌ No valid chains configured. Set CHAINS environment variable.');
+      console.error('Available chains: ethereum, world-chain, flow-evm, sepolia');
+      console.error('Example: CHAINS=world-chain,flow-evm');
       process.exit(1);
     }
 
     console.log('🚀 Starting Multi-Chain Assemble Protocol Indexer');
     console.log('═'.repeat(60));
-    console.log(`📊 Chains to index: ${chainsToRun.map(c => c.chainName).join(', ')}`);
+    console.log(`📊 Chains to index: ${chainsToRun.map(c => c.name).join(', ')}`);
     console.log('');
 
     // Start all chain indexers in parallel
@@ -59,63 +69,62 @@ class MultiChainIndexer {
     const chainsEnv = process.env.CHAINS || '';
     const chainNames = chainsEnv.split(',').map(c => c.trim()).filter(Boolean);
     
-    const configs: ChainConfig[] = [];
+    if (chainNames.length === 0) {
+      console.warn('⚠️  CHAINS environment variable is empty or not set');
+      return [];
+    }
+
+    const selectedChains: ChainConfig[] = [];
     
     for (const chainName of chainNames) {
-      const config = this.getChainConfig(chainName);
-      if (config) {
-        configs.push(config);
+      const chain = this.getChainByName(chainName);
+      if (chain) {
+        selectedChains.push(chain);
       } else {
         console.warn(`⚠️  Skipping invalid chain: ${chainName}`);
+        console.warn(`   Available chains: ${this.getAvailableChainNames().join(', ')}`);
       }
     }
     
-    return configs;
+    return selectedChains;
   }
 
-  private getChainConfig(chainName: string): ChainConfig | null {
-    const chainConfigs: Record<string, Partial<ChainConfig>> = {
-      ethereum: {
-        chainId: '1',
-        chainName: 'ethereum',
-        rpcUrl: process.env.ETHEREUM_RPC_URL,
-        contractAddress: process.env.ETHEREUM_CONTRACT_ADDRESS,
-        startBlock: process.env.ETHEREUM_START_BLOCK || '0'
-      },
-      world: {
-        chainId: '480',
-        chainName: 'world',
-        rpcUrl: process.env.WORLD_RPC_URL,
-        contractAddress: process.env.WORLD_CONTRACT_ADDRESS,
-        startBlock: process.env.WORLD_START_BLOCK || '0'
-      },
-      flow: {
-        chainId: '747',
-        chainName: 'flow-evm',
-        rpcUrl: process.env.FLOW_RPC_URL,
-        contractAddress: process.env.FLOW_CONTRACT_ADDRESS,
-        startBlock: process.env.FLOW_START_BLOCK || '0'
-      },
-      sepolia: {
-        chainId: '11155111',
-        chainName: 'sepolia',
-        rpcUrl: process.env.SEPOLIA_RPC_URL,
-        contractAddress: process.env.SEPOLIA_CONTRACT_ADDRESS,
-        startBlock: process.env.SEPOLIA_START_BLOCK || '0'
-      }
-    };
+  private getChainByName(chainName: string): ChainConfig | null {
+    // Normalize chain names to support common variants
+    const normalizedName = chainName.toLowerCase().replace(/[-_\s]/g, '');
+    
+    return this.config.chains.find(chain => {
+      const normalizedChainName = chain.name.toLowerCase().replace(/[-_\s]/g, '');
+      
+      // Support multiple name variants
+      const variants = [
+        normalizedChainName,
+        normalizedChainName.replace('mainnet', ''),
+        normalizedChainName.replace('testnet', ''),
+        normalizedChainName.replace('evm', ''),
+        normalizedChainName.replace('chain', '')
+      ];
+      
+      return variants.includes(normalizedName) || 
+             chain.chainId.toString() === chainName; // Support chain ID as name
+    }) || null;
+  }
 
-    const config = chainConfigs[chainName];
-    if (!config || !config.rpcUrl || !config.contractAddress) {
-      return null;
-    }
-
-    return config as ChainConfig;
+  private getAvailableChainNames(): string[] {
+    return this.config.chains.map(chain => {
+      const baseName = chain.name.toLowerCase()
+        .replace('mainnet', '')
+        .replace('testnet', '')
+        .replace(/\s+/g, '-')
+        .trim();
+      
+      return baseName;
+    });
   }
 
   private async startChainIndexer(chain: ChainConfig): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(`🔗 Starting ${chain.chainName} indexer...`);
+      console.log(`🔗 Starting ${chain.name} indexer...`);
       
       const indexerPath = path.join(process.cwd(), 'dist', 'index.js');
       
@@ -123,11 +132,14 @@ class MultiChainIndexer {
       const childProcess = spawn('node', [indexerPath], {
         env: {
           ...process.env,
-          CHAIN_ID: chain.chainId,
-          CHAIN_NAME: chain.chainName,
+          // Override with single-chain configuration
+          CHAIN_ID: chain.chainId.toString(),
+          CHAIN_NAME: chain.name,
           RPC_URL: chain.rpcUrl,
+          WS_URL: chain.wsUrl || '',
           CONTRACT_ADDRESS: chain.contractAddress,
-          START_BLOCK: chain.startBlock,
+          START_BLOCK: chain.startBlock.toString(),
+          BLOCK_POLLING_INTERVAL: chain.blockPollingInterval.toString(),
           LOG_LEVEL: process.env.LOG_LEVEL || 'info'
         },
         stdio: ['inherit', 'pipe', 'pipe']
@@ -137,35 +149,35 @@ class MultiChainIndexer {
       childProcess.stdout?.on('data', (data) => {
         const message = data.toString().trim();
         if (message) {
-          console.log(`[${chain.chainName.toUpperCase()}] ${message}`);
+          console.log(`[${chain.name.toUpperCase().replace(/\s+/g, '-')}] ${message}`);
         }
       });
 
       childProcess.stderr?.on('data', (data) => {
         const message = data.toString().trim();
         if (message) {
-          console.error(`[${chain.chainName.toUpperCase()}] ${message}`);
+          console.error(`[${chain.name.toUpperCase().replace(/\s+/g, '-')}] ${message}`);
         }
       });
 
       childProcess.on('spawn', () => {
-        console.log(`✅ ${chain.chainName} indexer spawned (PID: ${childProcess.pid})`);
-        this.processes.set(chain.chainName, childProcess);
+        console.log(`✅ ${chain.name} indexer spawned (PID: ${childProcess.pid})`);
+        this.processes.set(chain.chainId, childProcess);
         resolve();
       });
 
       childProcess.on('error', (error) => {
-        console.error(`❌ ${chain.chainName} indexer failed to start:`, error);
+        console.error(`❌ ${chain.name} indexer failed to start:`, error);
         reject(error);
       });
 
       childProcess.on('exit', (code, signal) => {
-        console.log(`⚠️  ${chain.chainName} indexer exited (code: ${code}, signal: ${signal})`);
-        this.processes.delete(chain.chainName);
+        console.log(`⚠️  ${chain.name} indexer exited (code: ${code}, signal: ${signal})`);
+        this.processes.delete(chain.chainId);
         
         // If not shutting down and exit was unexpected, restart
         if (!this.isShuttingDown && code !== 0) {
-          console.log(`🔄 Restarting ${chain.chainName} indexer...`);
+          console.log(`🔄 Restarting ${chain.name} indexer...`);
           setTimeout(() => {
             this.startChainIndexer(chain).catch(console.error);
           }, 5000);
@@ -179,7 +191,11 @@ class MultiChainIndexer {
     setInterval(() => {
       if (this.isShuttingDown) return;
       
-      const runningChains = Array.from(this.processes.keys());
+      const runningChains = Array.from(this.processes.entries()).map(([chainId]) => {
+        const chain = this.config.chains.find(c => c.chainId === chainId);
+        return chain?.name || `Chain-${chainId}`;
+      });
+      
       if (runningChains.length > 0) {
         console.log(`💓 Health check: ${runningChains.length} chains running (${runningChains.join(', ')})`);
       } else {
@@ -199,7 +215,9 @@ class MultiChainIndexer {
       this.isShuttingDown = true;
       
       // Kill all child processes
-      for (const [chainName, childProcess] of this.processes) {
+      for (const [chainId, childProcess] of this.processes) {
+        const chain = this.config.chains.find(c => c.chainId === chainId);
+        const chainName = chain?.name || `Chain-${chainId}`;
         console.log(`🔄 Stopping ${chainName} indexer...`);
         childProcess.kill('SIGTERM');
       }
