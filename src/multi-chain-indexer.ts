@@ -8,7 +8,7 @@
  */
 
 import { spawn, ChildProcess } from 'child_process';
-import path from 'path';
+import * as path from 'path';
 
 interface ChainConfig {
   chainId: string;
