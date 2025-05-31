@@ -1,0 +1,2427 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_feeTo",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PAYMENT_SPLITS",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PLATFORM_FEE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PROTOCOL_FEE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_TICKET_QUANTITY",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "REFUND_CLAIM_DEADLINE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "addFriend",
+    "inputs": [
+      {
+        "name": "friend",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "allowance",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "approve",
+    "inputs": [
+      {
+        "name": "spender",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "id",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "banUser",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "calculatePrice",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "totalPrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "cancelEvent",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "checkIn",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "checkInDelegate",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "ticketTokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "attendee",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "checkInWithTicket",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "ticketTokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimFunds",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimOrganizerCredential",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimTicketRefund",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimTipRefund",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "comments",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "author",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "parentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isDeleted",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "likes",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "createEvent",
+    "inputs": [
+      {
+        "name": "params",
+        "type": "tuple",
+        "internalType": "struct Assemble.EventParams",
+        "components": [
+          {
+            "name": "title",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "imageUri",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "startTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "endTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "capacity",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "venueId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "visibility",
+            "type": "uint8",
+            "internalType": "enum Assemble.EventVisibility"
+          }
+        ]
+      },
+      {
+        "name": "tiers",
+        "type": "tuple[]",
+        "internalType": "struct Assemble.TicketTier[]",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "maxSupply",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "sold",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startSaleTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "endSaleTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "transferrable",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      },
+      {
+        "name": "splits",
+        "type": "tuple[]",
+        "internalType": "struct Assemble.PaymentSplit[]",
+        "components": [
+          {
+            "name": "recipient",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "basisPoints",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deleteComment",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "eventCancelled",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "eventInvites",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "eventOrganizers",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "events",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "basePrice",
+        "type": "uint128",
+        "internalType": "uint128"
+      },
+      {
+        "name": "startTime",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "capacity",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "venueId",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "visibility",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "feeTo",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "generateTokenId",
+    "inputs": [
+      {
+        "name": "tokenType",
+        "type": "uint8",
+        "internalType": "enum Assemble.TokenType"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "serialNumber",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "getComment",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct CommentLibrary.Comment",
+        "components": [
+          {
+            "name": "author",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "timestamp",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "parentId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isDeleted",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "likes",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getEventComments",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFriends",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPaymentSplits",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct Assemble.PaymentSplit[]",
+        "components": [
+          {
+            "name": "recipient",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "basisPoints",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRefundAmounts",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "ticketRefund",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tipRefund",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserRSVP",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum SocialLibrary.RSVPStatus"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasAttended",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasLikedComment",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "inviteToEvent",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "invitees",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isEventCancelled",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isFriend",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isInvited",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "invited",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isOperator",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isValidTicketForEvent",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "isValid",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "likeComment",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "nextCommentId",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "nextEventId",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pendingWithdrawals",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "postComment",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "parentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "protocolFeeBps",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "purchaseTickets",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "purchaseTickets",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "referrer",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "platformFeeBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "removeFriend",
+    "inputs": [
+      {
+        "name": "friend",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "removeInvitation",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "invitee",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "rsvps",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum SocialLibrary.RSVPStatus"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setFeeTo",
+    "inputs": [
+      {
+        "name": "newFeeTo",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setOperator",
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setProtocolFee",
+    "inputs": [
+      {
+        "name": "newFeeBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "ticketTiers",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxSupply",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "sold",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "startSaleTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "endSaleTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "transferrable",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tipEvent",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "referrer",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "platformFeeBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "tipEvent",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "totalReferralFees",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalSupply",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "transfer",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "id",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unbanUser",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unlikeComment",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateRSVP",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum SocialLibrary.RSVPStatus"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "usedTickets",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Approval",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "spender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "id",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "AttendanceVerified",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CommentDeleted",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "deletedBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CommentLiked",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CommentPosted",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "author",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "parentId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CommentUnliked",
+    "inputs": [
+      {
+        "name": "commentId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EventCancelled",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "organizer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EventCreated",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "organizer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "startTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EventTipped",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "tipper",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FeeToUpdated",
+    "inputs": [
+      {
+        "name": "oldFeeTo",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newFeeTo",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FriendAdded",
+    "inputs": [
+      {
+        "name": "user1",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "user2",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FriendRemoved",
+    "inputs": [
+      {
+        "name": "user1",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "user2",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FundsClaimed",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InvitationRevoked",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "invitee",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "organizer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OperatorSet",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PaymentAllocated",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PlatformFeeAllocated",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "referrer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "feeBps",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ProtocolFeeUpdated",
+    "inputs": [
+      {
+        "name": "oldFee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newFee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RSVPUpdated",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum SocialLibrary.RSVPStatus"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundClaimed",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "refundType",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TicketPurchased",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "buyer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TicketUsed",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "ticketTokenId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Transfer",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "id",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserBanned",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "bannedBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserInvited",
+    "inputs": [
+      {
+        "name": "eventId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "invitee",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "organizer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserUnbanned",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "unbannedBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AlreadyBan",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AlreadyFriends",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AlreadyInvited",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AlreadyLiked",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadAddr",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadBps",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadCap",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadContent",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadEndTime",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadFeeTo",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadQty",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadRecipient",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadRef",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadSaleTimes",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadTime",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "BadTotal",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Banned",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Cancelled",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CantAddSelf",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Ended",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EventOver",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Expired",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FeeHigh",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NeedMore",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NeedValue",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoComment",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoEvent",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoFunds",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoParent",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoPerms",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoRefund",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoSpace",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoSplits",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoSupply",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoTicket",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoTier",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoTiers",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotActive",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotAuth",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotBan",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotCancelled",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotDone",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotEventTime",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotExpired",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotFriends",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotInvited",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotLiked",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotOrganizer",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotPrivate",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotStarted",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ParentDel",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PlatformHigh",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RefundFail",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Soulbound",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Started",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TooMany",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TransferFail",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Used",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WrongEvent",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WrongOrg",
+    "inputs": []
+  }
+]

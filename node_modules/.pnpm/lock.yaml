@@ -11,6 +11,9 @@ importers:
       '@graphql-tools/schema':
         specifier: ^10.0.0
         version: 10.0.23(graphql@16.11.0)
+      '@imaginarylabs/assemble':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@prisma/client':
         specifier: ^5.7.1
         version: 5.22.0(prisma@5.22.0)
@@ -27,7 +30,7 @@ importers:
         specifier: ^5.7.1
         version: 5.22.0
       viem:
-        specifier: ^1.19.11
+        specifier: ^1.21.4
         version: 1.21.4(typescript@5.8.3)(zod@3.25.42)
       ws:
         specifier: ^8.14.2
@@ -473,6 +476,10 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
+
+  '@imaginarylabs/assemble@0.1.0':
+    resolution: {integrity: sha512-urebQGcqLI1yRfwBYrNWq6usYFaKoPS3Gv6AIdX9p3MgmWAFcQa4UG7EYdL8Sx7bbVXstVmsBh8TrXtFlVg/qw==}
+    engines: {node: '>=16.0.0'}
 
   '@istanbuljs/load-nyc-config@1.1.0':
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -2327,6 +2334,8 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
+
+  '@imaginarylabs/assemble@0.1.0': {}
 
   '@istanbuljs/load-nyc-config@1.1.0':
     dependencies:

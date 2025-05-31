@@ -14,6 +14,7 @@ import { IndexerLogger } from '@/utils/logger';
 import { RetryManager } from './retry-manager';
 import { StateManager } from './state-manager';
 import { BlockchainClient } from './blockchain-client';
+import { abiDecoder } from '@/utils/abi-decoder';
 
 export class BaseIndexer implements BaseIndexerInterface {
   private readonly config: IndexerConfig;
@@ -486,34 +487,54 @@ export class BaseIndexer implements BaseIndexerInterface {
    * Try to handle an event with registered handlers
    */
   private async tryHandleEvent(chainId: number, log: LogData): Promise<{ eventName: string } | null> {
-    // For now, we'll implement a basic topic-based detection
-    // In a real implementation, you'd use ABI decoding
+    // Use ABI decoding to identify and decode the event
+    const decodedEvent = abiDecoder.decodeLog(log);
     
-    for (const [eventName, handler] of this.eventHandlers) {
-      try {
-        // Create event context
-        const context: EventContext = {
-          chainId,
-          blockNumber: log.blockNumber,
-          transactionHash: log.transactionHash,
-          logIndex: log.logIndex,
-          prisma: this.prisma,
-          logger: this.logger
-        };
-
-        // For now, pass the raw log data
-        // In a real implementation, you'd decode the event data using ABI
-        await handler.handle(log, {}, context);
-        
-        return { eventName };
-        
-      } catch (error) {
-        // Handler didn't match or failed - continue to next handler
-        continue;
-      }
+    if (!decodedEvent) {
+      // Not an Assemble Protocol event or couldn't decode
+      return null;
     }
 
-    return null;
+    const { eventName, args } = decodedEvent;
+    
+    // Check if we have a handler for this event
+    const handler = this.eventHandlers.get(eventName);
+    if (!handler) {
+      this.logger.debug('No handler registered for event', {
+        chainId,
+        eventName,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex
+      });
+      return null;
+    }
+
+    try {
+      // Create event context
+      const context: EventContext = {
+        chainId,
+        blockNumber: log.blockNumber,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex,
+        prisma: this.prisma,
+        logger: this.logger
+      };
+
+      // Call the handler with properly decoded data
+      await handler.handle(log, args, context);
+      
+      return { eventName };
+      
+    } catch (error) {
+      this.logger.error('Event handler failed', {
+        chainId,
+        eventName,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex,
+        error: (error as Error).message
+      });
+      throw error;
+    }
   }
 
   /**
