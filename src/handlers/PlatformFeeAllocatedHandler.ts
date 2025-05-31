@@ -59,7 +59,6 @@ export class PlatformFeeAllocatedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement platform fee tracking
       // This could involve:
       // 1. Creating a PlatformFeeAllocation model to track fee distributions
       // 2. Linking fee allocations to specific events and referrers

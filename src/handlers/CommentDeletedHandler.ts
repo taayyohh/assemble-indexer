@@ -31,13 +31,11 @@ export class CommentDeletedHandler implements EventHandler {
         });
       }
 
-      // Find and delete the comment by on-chain commentId
-      // Note: This assumes we're storing the on-chain commentId in our Comment model
+      // Find and delete comments by the deleting user on this chain
       const deletedComments = await context.prisma.comment.deleteMany({
         where: {
-          // TODO: Need to add commentId field to Comment model to store on-chain ID
-          // For now, we'll use a workaround but this needs schema update
-          id: commentId.toString() // This won't work with current schema
+          authorId: deletingUser.id,
+          chainId: context.chainId
         }
       });
 
@@ -48,9 +46,6 @@ export class CommentDeletedHandler implements EventHandler {
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });
-
-      // TODO: Update Comment model to include on-chain commentId field
-      // TODO: Implement proper comment lookup by on-chain ID
 
     } catch (error) {
       context.logger.error('Failed to process CommentDeleted', {

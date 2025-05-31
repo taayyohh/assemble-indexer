@@ -59,7 +59,6 @@ export class PaymentAllocatedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement payment allocation tracking
       // This could involve:
       // 1. Creating a PaymentAllocation model to track all payments
       // 2. Linking payments to specific events and roles

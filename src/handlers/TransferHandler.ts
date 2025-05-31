@@ -19,8 +19,116 @@ export class TransferHandler implements EventHandler {
         transactionHash: context.transactionHash
       });
 
-      // Handle badge/ticket transfers
-      if (from !== '0x0000000000000000000000000000000000000000') {
+      // Ensure recipient user exists
+      let recipientUser = await context.prisma.user.findUnique({
+        where: { address: to.toLowerCase() }
+      });
+
+      if (!recipientUser) {
+        recipientUser = await context.prisma.user.create({
+          data: {
+            address: to.toLowerCase(),
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        });
+      }
+
+      const isZeroAddress = from === '0x0000000000000000000000000000000000000000';
+
+      if (isZeroAddress) {
+        // This is a mint operation - could be badge or ticket minting
+        
+        // Determine if this is a badge mint based on token ID patterns or amount
+        // Badges typically have amount = 1 and are soulbound
+        const isBadgeMint = amount.toString() === '1';
+        
+        if (isBadgeMint) {
+          // Find associated event for this badge (badges are event-specific)
+          // Use a reasonable approach to link badge to event
+          const recentEvent = await context.prisma.event.findFirst({
+            orderBy: { createdAt: 'desc' },
+            where: {
+              chainId: context.chainId
+            }
+          });
+
+          if (recentEvent) {
+            // Create new badge
+            const badge = await context.prisma.badge.create({
+              data: {
+                tokenId: id.toString(),
+                badgeType: 'ATTENDANCE', // Default type, could be determined by event context
+                name: `Badge #${id.toString()}`,
+                description: `Badge issued for event ${recentEvent.title}`,
+                imageUrl: null,
+                isSoulbound: true, // All badges are soulbound by default
+                ownerId: recipientUser.id,
+                eventId: recentEvent.id,
+                chainId: context.chainId,
+                blockNumber: context.blockNumber,
+                transactionHash: context.transactionHash,
+                logIndex: log.logIndex,
+                createdAt: new Date()
+              }
+            });
+
+            context.logger.info('Badge minted successfully', {
+              badgeId: badge.id,
+              tokenId: badge.tokenId,
+              recipient: to,
+              eventId: recentEvent.id,
+              isSoulbound: badge.isSoulbound,
+              chainId: context.chainId,
+              transactionHash: context.transactionHash
+            });
+          }
+        } else {
+          // This might be a ticket mint
+          const recentEvent = await context.prisma.event.findFirst({
+            orderBy: { createdAt: 'desc' },
+            where: {
+              chainId: context.chainId
+            },
+            include: {
+              ticketTiers: true
+            }
+          });
+
+          if (recentEvent && recentEvent.ticketTiers.length > 0) {
+            // Use the first available tier
+            const defaultTier = recentEvent.ticketTiers[0];
+            
+            const ticket = await context.prisma.ticket.create({
+              data: {
+                ticketId: id.toString(),
+                ownerId: recipientUser.id,
+                eventId: recentEvent.id,
+                tierid: defaultTier.id,
+                status: 'ACTIVE',
+                purchasePrice: '0', // Minted tickets have 0 price initially
+                platformFee: '0',
+                chainId: context.chainId,
+                blockNumber: context.blockNumber,
+                transactionHash: context.transactionHash,
+                logIndex: log.logIndex,
+                createdAt: new Date(),
+                updatedAt: new Date()
+              }
+            });
+
+            context.logger.info('Ticket minted successfully', {
+              ticketId: ticket.id,
+              tokenId: ticket.ticketId,
+              recipient: to,
+              tierId: defaultTier.id,
+              eventId: recentEvent.id,
+              chainId: context.chainId,
+              transactionHash: context.transactionHash
+            });
+          }
+        }
+      } else {
         // This is a transfer (not a mint)
         
         // Check if this is a badge transfer
@@ -29,26 +137,23 @@ export class TransferHandler implements EventHandler {
         });
 
         if (badge) {
-          // Ensure new owner exists
-          let newOwner = await context.prisma.user.findUnique({
-            where: { address: to.toLowerCase() }
-          });
-
-          if (!newOwner) {
-            newOwner = await context.prisma.user.create({
-              data: {
-                address: to.toLowerCase(),
-                createdAt: new Date(),
-                updatedAt: new Date()
-              }
+          if (badge.isSoulbound) {
+            context.logger.warn('Attempted transfer of soulbound badge', {
+              badgeId: badge.id,
+              tokenId: badge.tokenId,
+              fromAddress: from,
+              toAddress: to,
+              chainId: context.chainId,
+              transactionHash: context.transactionHash
             });
+            return; // Soulbound badges cannot be transferred
           }
 
-          // Update badge ownership
+          // Update badge ownership for transferable badges
           const updatedBadge = await context.prisma.badge.update({
             where: { id: badge.id },
             data: {
-              ownerId: newOwner.id
+              ownerId: recipientUser.id
             }
           });
 
@@ -57,7 +162,7 @@ export class TransferHandler implements EventHandler {
             tokenId: updatedBadge.tokenId,
             fromAddress: from,
             toAddress: to,
-            newOwnerId: newOwner.id
+            newOwnerId: recipientUser.id
           });
         }
 
@@ -67,26 +172,11 @@ export class TransferHandler implements EventHandler {
         });
 
         if (ticket) {
-          // Ensure new owner exists
-          let newOwner = await context.prisma.user.findUnique({
-            where: { address: to.toLowerCase() }
-          });
-
-          if (!newOwner) {
-            newOwner = await context.prisma.user.create({
-              data: {
-                address: to.toLowerCase(),
-                createdAt: new Date(),
-                updatedAt: new Date()
-              }
-            });
-          }
-
           // Update ticket ownership and status
           const updatedTicket = await context.prisma.ticket.update({
             where: { id: ticket.id },
             data: {
-              ownerId: newOwner.id,
+              ownerId: recipientUser.id,
               status: 'TRANSFERRED',
               updatedAt: new Date()
             }
@@ -97,7 +187,7 @@ export class TransferHandler implements EventHandler {
             tokenId: updatedTicket.ticketId,
             fromAddress: from,
             toAddress: to,
-            newOwnerId: newOwner.id,
+            newOwnerId: recipientUser.id,
             status: updatedTicket.status
           });
         }
@@ -109,6 +199,7 @@ export class TransferHandler implements EventHandler {
         to,
         tokenId: id.toString(),
         amount: amount.toString(),
+        isMint: isZeroAddress,
         chainId: context.chainId,
         transactionHash: context.transactionHash,
         blockNumber: context.blockNumber.toString()

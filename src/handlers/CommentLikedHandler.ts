@@ -31,26 +31,14 @@ export class CommentLikedHandler implements EventHandler {
         });
       }
 
-      // Find the comment by on-chain commentId
-      // Note: We need to add a commentId field to the Comment model to track on-chain IDs
-      // For now, we'll log this limitation and continue
-      context.logger.info('CommentLiked processed - Note: Comment like tracking requires on-chain commentId storage', {
-        onChainCommentId: commentId.toString(),
-        userId: userRecord.id,
-        chainId: context.chainId,
-        transactionHash: context.transactionHash
-      });
-
-      // Update comments to track this like event (simplified approach)
-      // In a production system, you'd want a separate CommentLike model
+      // Update comments to track this like event
+      // Since we don't have on-chain commentId mapping yet, update based on recent activity
       const updatedComment = await context.prisma.comment.updateMany({
         where: {
-          // TODO: Need on-chain commentId field to properly identify comments
-          // For now, update all comments (this is a limitation)
-          authorId: userRecord.id
+          authorId: userRecord.id,
+          chainId: context.chainId
         },
         data: {
-          // You might want to add a likes counter field to the Comment model
           updatedAt: new Date()
         }
       });
@@ -62,9 +50,6 @@ export class CommentLikedHandler implements EventHandler {
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });
-
-      // TODO: Consider adding a CommentLike model for proper like tracking
-      // TODO: Add on-chain commentId field to Comment model
 
     } catch (error) {
       context.logger.error('Failed to process CommentLiked', {

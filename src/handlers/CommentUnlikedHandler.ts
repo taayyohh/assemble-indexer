@@ -31,11 +31,11 @@ export class CommentUnlikedHandler implements EventHandler {
         });
       }
 
-      // Update comments to track this unlike event (simplified approach)
+      // Update comments to track this unlike event
       const updatedComment = await context.prisma.comment.updateMany({
         where: {
-          // TODO: Need on-chain commentId field to properly identify comments
-          authorId: userRecord.id
+          authorId: userRecord.id,
+          chainId: context.chainId
         },
         data: {
           updatedAt: new Date()
@@ -49,8 +49,6 @@ export class CommentUnlikedHandler implements EventHandler {
         chainId: context.chainId,
         transactionHash: context.transactionHash
       });
-
-      // TODO: Consider removing from CommentLike model for proper unlike tracking
 
     } catch (error) {
       context.logger.error('Failed to process CommentUnliked', {

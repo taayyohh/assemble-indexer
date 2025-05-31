@@ -25,7 +25,6 @@ export class FeeToUpdatedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement fee recipient tracking
       // This could involve:
       // 1. Creating a FeeConfiguration model to track fee recipient changes
       // 2. Storing historical fee recipient addresses

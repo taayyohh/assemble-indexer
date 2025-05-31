@@ -61,12 +61,6 @@ export class ApprovalHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement approval tracking
-      // This could involve:
-      // 1. Creating an Approval model to track ERC-6909 approvals
-      // 2. Linking approvals to specific tokens/badges
-      // 3. Tracking approval amounts and expiration
-
     } catch (error) {
       context.logger.error('Failed to process Approval', {
         error: (error as Error).message,

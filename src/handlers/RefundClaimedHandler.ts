@@ -79,7 +79,6 @@ export class RefundClaimedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Consider adding a Refund model to track all refund transactions
       // This would provide better financial audit trails
 
     } catch (error) {

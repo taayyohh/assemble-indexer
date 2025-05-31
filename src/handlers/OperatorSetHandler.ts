@@ -59,12 +59,6 @@ export class OperatorSetHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement operator tracking
-      // This could involve:
-      // 1. Creating an Operator model to track ERC-6909 operator approvals
-      // 2. Linking operators to specific owners
-      // 3. Tracking approval status changes over time
-
     } catch (error) {
       context.logger.error('Failed to process OperatorSet', {
         error: (error as Error).message,

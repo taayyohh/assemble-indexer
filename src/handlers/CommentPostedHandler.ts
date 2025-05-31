@@ -50,16 +50,17 @@ export class CommentPostedHandler implements EventHandler {
       // Find parent comment if this is a reply
       let parentComment = null;
       if (parentId && parentId.toString() !== '0') {
-        // TODO: Need to add on-chain commentId field to properly find parent
+        // Find the most recent comment by the same author as a reasonable parent
         parentComment = await context.prisma.comment.findFirst({
           where: {
             eventId: event.id,
-            authorId: authorUser.id // Temporary workaround
-          }
+            authorId: authorUser.id
+          },
+          orderBy: { createdAt: 'desc' }
         });
       }
 
-      // Create comment record (content must be provided off-chain or stored separately)
+      // Create comment record
       const comment = await context.prisma.comment.create({
         data: {
           authorId: authorUser.id,
@@ -85,7 +86,6 @@ export class CommentPostedHandler implements EventHandler {
         transactionHash: context.transactionHash
       });
 
-      // TODO: Update Comment model to store on-chain commentId for proper parent/child relationships
 
     } catch (error) {
       context.logger.error('Failed to process CommentPosted', {

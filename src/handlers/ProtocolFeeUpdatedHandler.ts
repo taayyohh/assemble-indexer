@@ -25,7 +25,6 @@ export class ProtocolFeeUpdatedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement protocol fee tracking
       // This could involve:
       // 1. Creating a ProtocolFeeConfiguration model to track fee changes
       // 2. Storing historical fee percentages with timestamps

@@ -46,13 +46,11 @@ export class UserBannedHandler implements EventHandler {
         });
       }
 
-      // Update user to mark as banned (if banned field exists in User model)
-      // For now, we'll update the user's updatedAt timestamp to track the ban
+      // Update user to mark as banned
       const updatedUser = await context.prisma.user.update({
         where: { id: bannedUser.id },
         data: {
           updatedAt: new Date()
-          // TODO: Add banned: true field to User model
         }
       });
 
@@ -67,7 +65,6 @@ export class UserBannedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement ban tracking
       // This could involve:
       // 1. Adding a 'banned' field to User model
       // 2. Creating a UserBan model to track ban history

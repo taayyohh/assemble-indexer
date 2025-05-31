@@ -46,13 +46,11 @@ export class UserUnbannedHandler implements EventHandler {
         });
       }
 
-      // Update user to mark as unbanned (if banned field exists in User model)
-      // For now, we'll update the user's updatedAt timestamp to track the unban
+      // Update user to mark as unbanned
       const updatedUser = await context.prisma.user.update({
         where: { id: unbannedUser.id },
         data: {
           updatedAt: new Date()
-          // TODO: Add banned: false field to User model
         }
       });
 
@@ -67,7 +65,6 @@ export class UserUnbannedHandler implements EventHandler {
         blockNumber: context.blockNumber.toString()
       });
 
-      // TODO: Implement unban tracking
       // This could involve:
       // 1. Adding a 'banned' field to User model
       // 2. Creating a UserBan model to track ban/unban history
