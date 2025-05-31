@@ -117,7 +117,7 @@ class MultiChainIndexer {
     return new Promise((resolve, reject) => {
       console.log(`🔗 Starting ${chain.chainName} indexer...`);
       
-      const indexerPath = path.join(__dirname, 'index.js');
+      const indexerPath = path.join(process.cwd(), 'dist', 'index.js');
       
       // Spawn the single-chain indexer with chain-specific environment
       const childProcess = spawn('node', [indexerPath], {
