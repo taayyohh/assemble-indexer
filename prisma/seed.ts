@@ -8,8 +8,6 @@ async function main() {
   // Initialize indexer states for all supported chains
   const chains = [
     { chainId: 1, name: 'Ethereum Mainnet' },
-    { chainId: 480, name: 'World Chain' }, 
-    { chainId: 747, name: 'Flow EVM' },
     { chainId: 11155111, name: 'Sepolia Testnet' }
   ];
 

@@ -10,30 +10,6 @@ import { mainnet, sepolia } from 'viem/chains';
 import type { ChainConfig, Logger, BlockData, LogData } from '../types';
 import { RetryManager } from './retry-manager';
 
-// Define custom chains
-const customChains: Record<number, Chain> = {
-  480: {
-    id: 480,
-    name: 'World Chain',
-    network: 'worldchain',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://worldchain-mainnet.g.alchemy.com/public'] },
-      public: { http: ['https://worldchain-mainnet.g.alchemy.com/public'] }
-    }
-  },
-  747: {
-    id: 747,
-    name: 'Flow EVM',
-    network: 'flow',
-    nativeCurrency: { name: 'Flow', symbol: 'FLOW', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://mainnet.evm.nodes.onflow.org'] },
-      public: { http: ['https://mainnet.evm.nodes.onflow.org'] }
-    }
-  }
-};
-
 export class BlockchainClient {
   private readonly config: ChainConfig;
   private readonly logger: Logger;
@@ -93,9 +69,6 @@ export class BlockchainClient {
         return mainnet;
       case 11155111:
         return sepolia;
-      case 480:
-      case 747:
-        return customChains[this.config.chainId];
       default:
         // Generic chain configuration
         return {

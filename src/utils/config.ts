@@ -52,24 +52,6 @@ export function loadConfig(): IndexerConfig {
       contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
     },
     {
-      chainId: 480,
-      name: 'World Chain',
-      rpcUrl: getRequiredEnv('WORLD_CHAIN_RPC_URL'),
-      wsUrl: getOptionalEnv('WORLD_CHAIN_WS_URL', ''),
-      startBlock: getBigIntEnv('START_BLOCK_WORLD_CHAIN', BigInt(0)),
-      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 12000),
-      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
-    },
-    {
-      chainId: 747,
-      name: 'Flow EVM',
-      rpcUrl: getRequiredEnv('FLOW_EVM_RPC_URL'),
-      wsUrl: getOptionalEnv('FLOW_EVM_WS_URL', ''),
-      startBlock: getBigIntEnv('START_BLOCK_FLOW_EVM', BigInt(0)),
-      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 12000),
-      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
-    },
-    {
       chainId: 11155111,
       name: 'Sepolia Testnet',
       rpcUrl: getRequiredEnv('SEPOLIA_RPC_URL'),

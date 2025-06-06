@@ -22,7 +22,7 @@ async function main() {
     // Create the indexer
     const indexer = new BaseIndexer(config);
 
-    // Register ALL 26 event handlers
+    // Register ALL 29 event handlers (enhanced protocol)
     console.log('🔧 Registering all event handlers...\n');
     
     const handlerInstances = [
@@ -55,6 +55,13 @@ async function main() {
       new handlers.PaymentAllocatedHandler(),
       new handlers.PlatformFeeAllocatedHandler(),
       
+      // NEW: ERC20 Payment Handlers
+      new handlers.ERC20FundsClaimedHandler(),
+      new handlers.TokenSupportUpdatedHandler(),
+      
+      // NEW: Venue System Handlers
+      new handlers.VenueCredentialMintedHandler(),
+      
       // Administrative Handlers
       new handlers.FeeToUpdatedHandler(),
       new handlers.ProtocolFeeUpdatedHandler(),
@@ -77,9 +84,9 @@ async function main() {
 
     console.log(`\n🎯 ALL ${handlerInstances.length} HANDLERS REGISTERED SUCCESSFULLY!\n`);
     
-    // Verify we have 26 handlers (complete protocol coverage)
-    if (handlerInstances.length !== 26) {
-      throw new Error(`Expected 26 handlers, but only registered ${handlerInstances.length}`);
+    // Verify we have 29 handlers (complete enhanced protocol coverage)
+    if (handlerInstances.length !== 29) {
+      throw new Error(`Expected 29 handlers, but only registered ${handlerInstances.length}`);
     }
 
     console.log('📋 Handler Categories:');
@@ -88,6 +95,8 @@ async function main() {
     console.log('  👥 Social Features: Friend*, Comment*, RSVPUpdated');
     console.log('  📨 Invitations: UserInvited, InvitationRevoked');
     console.log('  💰 Financial: Refund*, Funds*, Payment*, PlatformFee*');
+    console.log('  🪙 ERC20 Payments: ERC20FundsClaimed, TokenSupportUpdated');
+    console.log('  🏢 Venue System: VenueCredentialMinted');
     console.log('  ⚙️  Administrative: FeeToUpdated, ProtocolFeeUpdated');
     console.log('  🚫 Moderation: UserBanned, UserUnbanned');
     console.log('  🏆 ERC-6909: Transfer, Approval, OperatorSet\n');
@@ -102,7 +111,7 @@ async function main() {
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
 
-    console.log('🚀 Starting production indexer with full protocol coverage...\n');
+    console.log('🚀 Starting production indexer with full enhanced protocol coverage...\n');
     
     // Start the indexer
     await indexer.start();
