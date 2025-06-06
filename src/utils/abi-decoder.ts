@@ -1,15 +1,15 @@
-import { decodeEventLog, type Address, type Hex } from 'viem';
+import { decodeEventLog, type Address, type Hex, type Abi } from 'viem';
 import AssembleABI from '../abi/Assemble.json';
 import type { LogData } from '../types';
 
-// Contract address from the deployment
-export const ASSEMBLE_CONTRACT_ADDRESS: Address = '0x00000004FE7c1E461A1703AF603F1A5F080Be253';
+// Contract address from the deployment (vanity address)
+export const ASSEMBLE_CONTRACT_ADDRESS: Address = '0x000000000a020d45fFc5cfcF7B28B5020ddd6a85';
 
 /**
  * ABI Decoder for Assemble Protocol events using viem
  */
 export class AssembleABIDecoder {
-  private readonly abi = AssembleABI;
+  private readonly abi = AssembleABI.abi as Abi;
 
   /**
    * Decode a log entry using the Assemble Protocol ABI
@@ -26,6 +26,10 @@ export class AssembleABIDecoder {
         topics: log.topics as [Hex, ...Hex[]],
         data: log.data as Hex
       });
+
+      if (!decoded.eventName) {
+        return null;
+      }
 
       return {
         eventName: decoded.eventName,
@@ -65,6 +69,7 @@ export class AssembleABIDecoder {
       'CommentLiked',
       'CommentPosted',
       'CommentUnliked',
+      'ERC20FundsClaimed',
       'EventCancelled',
       'EventCreated',
       'EventTipped',
@@ -81,10 +86,12 @@ export class AssembleABIDecoder {
       'RefundClaimed',
       'TicketPurchased',
       'TicketUsed',
+      'TokenSupportUpdated',
       'Transfer',
       'UserBanned',
       'UserInvited',
-      'UserUnbanned'
+      'UserUnbanned',
+      'VenueCredentialMinted'
     ];
   }
 }

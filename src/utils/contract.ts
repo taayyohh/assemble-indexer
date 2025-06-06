@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+import { createPublicClient, http, type Abi, type Address, type Hex } from 'viem';
+import { mainnet, sepolia } from 'viem/chains';
 import assembleAbi from '../abi/Assemble.json';
 import type { EventContext } from '../types';
 
@@ -69,14 +70,17 @@ export async function getEventDataFromContract(
   context: EventContext
 ): Promise<PackedEventData> {
   try {
-    const provider = new ethers.JsonRpcProvider(getChainConfig(context.chainId).rpcUrl);
-    const contract = new ethers.Contract(
-      getChainConfig(context.chainId).contractAddress,
-      assembleAbi.abi,
-      provider
-    );
+    const client = createPublicClient({
+      chain: getChain(context.chainId),
+      transport: http(getChainConfig(context.chainId).rpcUrl)
+    });
 
-    const eventData = await contract.events(eventId);
+    const eventData = await client.readContract({
+      address: getChainConfig(context.chainId).contractAddress as Address,
+      abi: assembleAbi.abi as Abi,
+      functionName: 'events',
+      args: [BigInt(eventId)]
+    }) as any;
     
     return {
       basePrice: eventData.basePrice,
@@ -109,14 +113,18 @@ export async function getEventMetadata(
   context: EventContext
 ): Promise<string> {
   try {
-    const provider = new ethers.JsonRpcProvider(getChainConfig(context.chainId).rpcUrl);
-    const contract = new ethers.Contract(
-      getChainConfig(context.chainId).contractAddress,
-      assembleAbi.abi,
-      provider
-    );
+    const client = createPublicClient({
+      chain: getChain(context.chainId),
+      transport: http(getChainConfig(context.chainId).rpcUrl)
+    });
 
-    const metadata = await contract.eventMetadata(eventId);
+    const metadata = await client.readContract({
+      address: getChainConfig(context.chainId).contractAddress as Address,
+      abi: assembleAbi.abi as Abi,
+      functionName: 'eventMetadata',
+      args: [BigInt(eventId)]
+    }) as string;
+
     return metadata;
   } catch (error) {
     context.logger.error('Failed to read event metadata from contract', {
@@ -136,8 +144,14 @@ export async function detectPaymentMethod(
   context: EventContext
 ): Promise<'ETH' | 'ERC20'> {
   try {
-    const provider = new ethers.JsonRpcProvider(getChainConfig(context.chainId).rpcUrl);
-    const receipt = await provider.getTransactionReceipt(transactionHash);
+    const client = createPublicClient({
+      chain: getChain(context.chainId),
+      transport: http(getChainConfig(context.chainId).rpcUrl)
+    });
+
+    const receipt = await client.getTransactionReceipt({
+      hash: transactionHash as Hex
+    });
     
     if (!receipt) {
       throw new Error('Transaction receipt not found');
@@ -146,7 +160,7 @@ export async function detectPaymentMethod(
     // Look for ERC20 Transfer events in the logs
     const erc20TransferSignature = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
     
-    const hasERC20Transfer = receipt.logs.some((log: any) => 
+    const hasERC20Transfer = receipt.logs.some((log) => 
       log.topics[0] === erc20TransferSignature
     );
 
@@ -170,8 +184,14 @@ export async function getPaymentToken(
   context: EventContext
 ): Promise<string | null> {
   try {
-    const provider = new ethers.JsonRpcProvider(getChainConfig(context.chainId).rpcUrl);
-    const receipt = await provider.getTransactionReceipt(transactionHash);
+    const client = createPublicClient({
+      chain: getChain(context.chainId),
+      transport: http(getChainConfig(context.chainId).rpcUrl)
+    });
+
+    const receipt = await client.getTransactionReceipt({
+      hash: transactionHash as Hex
+    });
     
     if (!receipt) {
       return null;
@@ -180,7 +200,7 @@ export async function getPaymentToken(
     // Look for ERC20 Transfer events and extract token address
     const erc20TransferSignature = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
     
-    const erc20Transfer = receipt.logs.find((log: any) => 
+    const erc20Transfer = receipt.logs.find((log) => 
       log.topics[0] === erc20TransferSignature
     );
 
@@ -192,6 +212,20 @@ export async function getPaymentToken(
       error: (error as Error).message
     });
     return null;
+  }
+}
+
+/**
+ * Get viem chain configuration by chain ID
+ */
+function getChain(chainId: number) {
+  switch (chainId) {
+    case 1:
+      return mainnet;
+    case 11155111:
+      return sepolia;
+    default:
+      throw new Error(`Unsupported chain ID: ${chainId}. Only Ethereum Mainnet (1) and Sepolia (11155111) are supported.`);
   }
 }
 
@@ -211,7 +245,7 @@ function getChainConfig(chainId: number): { rpcUrl: string; contractAddress: str
     case 11155111: // Sepolia
       return {
         rpcUrl: process.env.SEPOLIA_RPC_URL || 'https://eth-sepolia.alchemyapi.io/v2/your-api-key',
-        contractAddress: process.env.ASSEMBLE_CONTRACT_ADDRESS || '0x000000000a020d45fFc5cfcF7B28B5020ddd6a85'
+        contractAddress: ASSEMBLE_CONTRACT_ADDRESS
       };
     default:
       throw new Error(`Unsupported chain ID: ${chainId}. Only Ethereum Mainnet (1) and Sepolia (11155111) are supported.`);

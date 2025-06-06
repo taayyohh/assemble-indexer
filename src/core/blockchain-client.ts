@@ -61,7 +61,7 @@ export class BlockchainClient {
   }
 
   /**
-   * Get the appropriate viem chain configuration
+   * Get the viem chain configuration
    */
   private getViemChain(): Chain {
     switch (this.config.chainId) {
@@ -70,11 +70,10 @@ export class BlockchainClient {
       case 11155111:
         return sepolia;
       default:
-        // Generic chain configuration
+        // Generic chain configuration for viem
         return {
           id: this.config.chainId,
           name: this.config.name,
-          network: this.config.name.toLowerCase().replace(/\s+/g, ''),
           nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
           rpcUrls: {
             default: { http: [this.config.rpcUrl] },
