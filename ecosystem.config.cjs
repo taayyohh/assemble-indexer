@@ -1,17 +1,17 @@
 module.exports = {
   apps: [
-    // Production indexer for Enhanced Assemble Protocol
+    // Production indexer for Enhanced Assemble Protocol (8 Chains)
     {
       name: 'assemble-indexer',
-      script: 'pnpm',
-      args: 'start',
+      script: 'node',
+      args: 'dist/index.js',
       instances: 1,
       exec_mode: 'fork',
 
       // Auto restart configuration
       autorestart: true,
       watch: false,
-      max_memory_restart: '3G', // Increased for enhanced protocol features
+      max_memory_restart: '6G', // Increased for 8-chain processing
 
       // Environment variables (PM2 will use your .env file)
       env: {
@@ -28,16 +28,16 @@ module.exports = {
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       
       // Log rotation
-      max_log_size: '50M',
-      retain_logs: 10,
+      max_log_size: '100M', // Increased for multi-chain logs
+      retain_logs: 15,
 
-      // Enhanced PM2 settings for blockchain indexing
-      min_uptime: '30s', // Wait longer before considering it stable
-      max_restarts: 5,   // Reduced for production stability
-      restart_delay: 10000, // 10 second delay between restarts
-      kill_timeout: 15000,  // Longer grace period for blockchain connections
+      // Enhanced PM2 settings for multi-chain blockchain indexing
+      min_uptime: '60s', // Longer wait for 8 chains to initialize
+      max_restarts: 3,   // Conservative for production
+      restart_delay: 30000, // 30 second delay between restarts
+      kill_timeout: 30000,  // Longer grace period for 8 blockchain connections
       wait_ready: true,
-      listen_timeout: 30000, // Longer timeout for blockchain connections
+      listen_timeout: 60000, // 60s timeout for all chains to connect
       shutdown_with_message: true,
 
       // Health monitoring
@@ -46,7 +46,8 @@ module.exports = {
         'node_modules',
         'logs',
         'dist',
-        '*.log'
+        '*.log',
+        'coverage'
       ]
     },
 
@@ -59,7 +60,7 @@ module.exports = {
       exec_mode: 'fork',
       autorestart: true,
       watch: false, // tsx handles file watching
-      max_memory_restart: '1G',
+      max_memory_restart: '4G', // Increased for dev multi-chain
       
       env: {
         NODE_ENV: 'development',
@@ -72,10 +73,11 @@ module.exports = {
       time: true,
       merge_logs: true,
       
-      min_uptime: '10s',
+      min_uptime: '30s',
       max_restarts: 10,
-      restart_delay: 3000,
-      kill_timeout: 5000
+      restart_delay: 10000,
+      kill_timeout: 15000,
+      listen_timeout: 45000
     },
 
     // Sepolia testnet indexer (optional)
