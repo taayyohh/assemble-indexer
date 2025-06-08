@@ -40,14 +40,14 @@ export function loadConfig(): IndexerConfig {
     }
   };
 
-  // Build chain configurations
+  // Build chain configurations for all 8 supported chains
   const chains: ChainConfig[] = [
     {
       chainId: 1,
       name: 'Ethereum Mainnet',
       rpcUrl: getRequiredEnv('ETHEREUM_RPC_URL'),
       wsUrl: getOptionalEnv('ETHEREUM_WS_URL', ''),
-      startBlock: getBigIntEnv('START_BLOCK_ETHEREUM', BigInt(20000000)),
+      startBlock: getBigIntEnv('START_BLOCK_ETHEREUM', BigInt(22604693)),
       blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 12000),
       contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
     },
@@ -56,8 +56,62 @@ export function loadConfig(): IndexerConfig {
       name: 'Sepolia Testnet',
       rpcUrl: getRequiredEnv('SEPOLIA_RPC_URL'),
       wsUrl: getOptionalEnv('SEPOLIA_WS_URL', ''),
-      startBlock: getBigIntEnv('START_BLOCK_SEPOLIA', BigInt(0)),
+      startBlock: getBigIntEnv('START_BLOCK_SEPOLIA', BigInt(8448322)),
       blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 12000),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 8453,
+      name: 'Base Mainnet',
+      rpcUrl: getRequiredEnv('BASE_RPC_URL'),
+      wsUrl: getOptionalEnv('BASE_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_BASE', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 2000),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 84532,
+      name: 'Base Sepolia',
+      rpcUrl: getRequiredEnv('BASE_SEPOLIA_RPC_URL'),
+      wsUrl: getOptionalEnv('BASE_SEPOLIA_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_BASE_SEPOLIA', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 2000),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 10,
+      name: 'Optimism',
+      rpcUrl: getRequiredEnv('OPTIMISM_RPC_URL'),
+      wsUrl: getOptionalEnv('OPTIMISM_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_OPTIMISM', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 2000),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 42161,
+      name: 'Arbitrum One',
+      rpcUrl: getRequiredEnv('ARBITRUM_RPC_URL'),
+      wsUrl: getOptionalEnv('ARBITRUM_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_ARBITRUM', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 500),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 137,
+      name: 'Polygon',
+      rpcUrl: getRequiredEnv('POLYGON_RPC_URL'),
+      wsUrl: getOptionalEnv('POLYGON_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_POLYGON', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 2000),
+      contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
+    },
+    {
+      chainId: 7777777,
+      name: 'Zora',
+      rpcUrl: getRequiredEnv('ZORA_RPC_URL'),
+      wsUrl: getOptionalEnv('ZORA_WS_URL', ''),
+      startBlock: getBigIntEnv('START_BLOCK_ZORA', BigInt(0)),
+      blockPollingInterval: getNumberEnv('BLOCK_POLLING_INTERVAL', 2000),
       contractAddress: getRequiredEnv('ASSEMBLE_CONTRACT_ADDRESS')
     }
   ];
